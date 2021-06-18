@@ -258,6 +258,11 @@ type PlatformStatus struct {
 	// +optional
 	Ovirt *OvirtPlatformStatus `json:"ovirt,omitempty"`
 
+	// PowerVS contains settings specific to the Power Systems Virtual Server infrastructure
+	// provider, which is an offering inside of IBM Cloud.
+	// +optional
+	PowerVS *PowerVSPlatformStatus `json:"powervs,omitempty"`
+
 	// VSphere contains settings specific to the VSphere infrastructure provider.
 	// +optional
 	VSphere *VSpherePlatformStatus `json:"vsphere,omitempty"`
@@ -551,6 +556,50 @@ type EquinixMetalPlatformStatus struct {
 	// ingressIP is an external IP which routes to the default ingress controller.
 	// The IP is a suitable target of a wildcard DNS record used to resolve default route host names.
 	IngressIP string `json:"ingressIP,omitempty"`
+}
+
+// PowervsServiceEndpoint store the configuration of a custom url to
+// override existing defaults of PowerVS Services.
+type PowerVSServiceEndpoint struct {
+	// name is the name of the PowerVS service.
+	// The list of all the service names can be found at https://cloud.ibm.com/docs/vpc?topic=vpc-service-endpoints-for-vpc
+	// Note that not all locations incude Power VS.
+	//
+	// +kubebuilder:validation:Pattern=`^[a-z0-9-]+$`
+	Name string `json:"name"`
+
+	// url is fully qualified URI with scheme https, that overrides the default generated
+	// endpoint for a client.
+	// This must be provided and cannot be empty.
+	//
+	// +kubebuilder:validation:Pattern=`^https://`
+	URL string `json:"url"`
+}
+
+// PowerVSPlatformSpec holds the desired state of the Power Systems Virtual Servers infrastructure provider.
+// This only includes fields that can be modified in the cluster.
+type PowerVSPlatformSpec struct {
+	// serviceEndpoints list contains custom endpoints which will override default
+	// service endpoint of PowerVS Services.
+	// There must be only one ServiceEndpoint for a service.
+	// +optional
+	// @TODO: Should this be a list, or would we only allow one?
+	ServiceEndpoints []PowerVSServiceEndpoint `json:"serviceEndpoints,omitempty"`
+}
+
+// PowerVSPlatformStatus holds the current status of the Power VS infrastructure provider.
+type PowerVSPlatformStatus struct {
+	// Region holds the default Power VS region for new Power VS resources created by the cluster.
+	Region string `json:"region"`
+
+	// Zone holds the default colo zone for the new Power VS resources created by the cluster.
+	// Note: Currently only single-zone OCP clusters are supported
+	Zone string `json:"zone"`
+
+	// ServiceEndpoints list contains custom endpoints which will override default
+	// service endpoint of Power VS Services.
+	// +optional
+	ServiceEndpoints []PowerVSServiceEndpoint `json:"serviceEndpoints,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
