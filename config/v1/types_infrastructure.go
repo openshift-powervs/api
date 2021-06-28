@@ -155,6 +155,9 @@ const (
 
 	// EquinixMetalPlatformType represents Equinix Metal infrastructure.
 	EquinixMetalPlatformType PlatformType = "EquinixMetal"
+
+	// PowerVSPlatformType represents the IBM Power Virtual Systems offering (colo with IBM Cloud)
+	PowerVSPlatformType PlatformType = "PowerVS"
 )
 
 // IBMCloudProviderType is a specific supported IBM Cloud provider cluster type
@@ -223,6 +226,9 @@ type PlatformSpec struct {
 	// EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.
 	// +optional
 	EquinixMetal *EquinixMetalPlatformSpec `json:"equinixMetal,omitempty"`
+
+	// PowerVS contains settings specific to the IBM Power Virtual Systems offering (colo with IBM Cloud)
+	PowerVS *PowerVSPlatformSpec `json:"powervs,omitempty"`
 }
 
 // PlatformStatus holds the current status specific to the underlying infrastructure provider
