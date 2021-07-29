@@ -124,7 +124,7 @@ const (
 )
 
 // PlatformType is a specific supported infrastructure provider.
-// +kubebuilder:validation:Enum="";AWS;Azure;BareMetal;GCP;Libvirt;OpenStack;None;VSphere;oVirt;IBMCloud;KubeVirt;EquinixMetal
+// +kubebuilder:validation:Enum="";AWS;Azure;BareMetal;GCP;Libvirt;OpenStack;None;VSphere;oVirt;IBMCloud;KubeVirt;EquinixMetal;PowerVS
 type PlatformType string
 
 const (
@@ -188,9 +188,9 @@ type PlatformSpec struct {
 	// balancers, dynamic volume provisioning, machine creation and deletion, and
 	// other integrations are enabled. If None, no infrastructure automation is
 	// enabled. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Libvirt",
-	// "OpenStack", "VSphere", "oVirt", "KubeVirt", "EquinixMetal", and "None". Individual components may not support
-	// all platforms, and must handle unrecognized platforms as None if they do
-	// not support that platform.
+	// "OpenStack", "VSphere", "oVirt", "KubeVirt", "EquinixMetal", "PowerVS", and "None".
+	// Individual components may not support all platforms, and must handle unrecognized
+	// platforms as None if they do not support that platform.
 	//
 	// +unionDiscriminator
 	Type PlatformType `json:"type"`
@@ -248,9 +248,9 @@ type PlatformStatus struct {
 	// balancers, dynamic volume provisioning, machine creation and deletion, and
 	// other integrations are enabled. If None, no infrastructure automation is
 	// enabled. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Libvirt",
-	// "OpenStack", "VSphere", "oVirt", "EquinixMetal", and "None". Individual components may not support
-	// all platforms, and must handle unrecognized platforms as None if they do
-	// not support that platform.
+	// "OpenStack", "VSphere", "oVirt", "EquinixMetal", "PowerVS", and "None".
+	// Individual components may not support all platforms, and must handle unrecognized
+	// platforms as None if they do not support that platform.
 	//
 	// This value will be synced with to the `status.platform` and `status.platformStatus.type`.
 	// Currently this value cannot be changed once set.
@@ -280,8 +280,7 @@ type PlatformStatus struct {
 	// +optional
 	Ovirt *OvirtPlatformStatus `json:"ovirt,omitempty"`
 
-	// PowerVS contains settings specific to the Power Systems Virtual Server infrastructure
-	// provider, which is an offering inside of IBM Cloud.
+	// PowerVS contains settings specific to the IBM Power Systems Virtual Server infrastructure.
 	// +optional
 	PowerVS *PowerVSPlatformStatus `json:"powervs,omitempty"`
 
@@ -587,8 +586,7 @@ type EquinixMetalPlatformStatus struct {
 // PowervsServiceEndpoint store the configuration of a custom url to
 // override existing defaults of PowerVS Services.
 type PowerVSServiceEndpoint struct {
-	// name is the name of the PowerVS service.
-	// The list of all the service names can be found at https://cloud.ibm.com/docs/vpc?topic=vpc-service-endpoints-for-vpc
+	// Name is the name of the Power VS services.
 	// Note that not all locations incude Power VS.
 	//
 	// +kubebuilder:validation:Pattern=`^[a-z0-9-]+$`
@@ -604,14 +602,7 @@ type PowerVSServiceEndpoint struct {
 
 // PowerVSPlatformSpec holds the desired state of the Power Systems Virtual Servers infrastructure provider.
 // This only includes fields that can be modified in the cluster.
-type PowerVSPlatformSpec struct {
-	// serviceEndpoints list contains custom endpoints which will override default
-	// service endpoint of PowerVS Services.
-	// There must be only one ServiceEndpoint for a service.
-	// +optional
-	// @TODO: Should this be a list, or would we only allow one?
-	ServiceEndpoints []PowerVSServiceEndpoint `json:"serviceEndpoints,omitempty"`
-}
+type PowerVSPlatformSpec struct{}
 
 // PowerVSPlatformStatus holds the current status of the Power VS infrastructure provider.
 type PowerVSPlatformStatus struct {

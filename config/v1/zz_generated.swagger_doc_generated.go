@@ -1039,7 +1039,7 @@ func (OvirtPlatformStatus) SwaggerDoc() map[string]string {
 
 var map_PlatformSpec = map[string]string{
 	"":             "PlatformSpec holds the desired state specific to the underlying infrastructure provider of the current cluster. Since these are used at spec-level for the underlying cluster, it is supposed that only one of the spec structs is set.",
-	"type":         "type is the underlying infrastructure provider for the cluster. This value controls whether infrastructure automation such as service load balancers, dynamic volume provisioning, machine creation and deletion, and other integrations are enabled. If None, no infrastructure automation is enabled. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"Libvirt\", \"OpenStack\", \"VSphere\", \"oVirt\", \"KubeVirt\", \"EquinixMetal\", and \"None\". Individual components may not support all platforms, and must handle unrecognized platforms as None if they do not support that platform.",
+	"type":         "type is the underlying infrastructure provider for the cluster. This value controls whether infrastructure automation such as service load balancers, dynamic volume provisioning, machine creation and deletion, and other integrations are enabled. If None, no infrastructure automation is enabled. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"Libvirt\", \"OpenStack\", \"VSphere\", \"oVirt\", \"KubeVirt\", \"EquinixMetal\", \"PowerVS\", and \"None\". Individual components may not support all platforms, and must handle unrecognized platforms as None if they do not support that platform.",
 	"aws":          "AWS contains settings specific to the Amazon Web Services infrastructure provider.",
 	"azure":        "Azure contains settings specific to the Azure infrastructure provider.",
 	"gcp":          "GCP contains settings specific to the Google Cloud Platform infrastructure provider.",
@@ -1050,6 +1050,7 @@ var map_PlatformSpec = map[string]string{
 	"ibmcloud":     "IBMCloud contains settings specific to the IBMCloud infrastructure provider.",
 	"kubevirt":     "Kubevirt contains settings specific to the kubevirt infrastructure provider.",
 	"equinixMetal": "EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.",
+	"powervs":      "PowerVS contains settings specific to the IBM Power Virtual Systems offering (colo with IBM Cloud)",
 }
 
 func (PlatformSpec) SwaggerDoc() map[string]string {
@@ -1058,13 +1059,14 @@ func (PlatformSpec) SwaggerDoc() map[string]string {
 
 var map_PlatformStatus = map[string]string{
 	"":             "PlatformStatus holds the current status specific to the underlying infrastructure provider of the current cluster. Since these are used at status-level for the underlying cluster, it is supposed that only one of the status structs is set.",
-	"type":         "type is the underlying infrastructure provider for the cluster. This value controls whether infrastructure automation such as service load balancers, dynamic volume provisioning, machine creation and deletion, and other integrations are enabled. If None, no infrastructure automation is enabled. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"Libvirt\", \"OpenStack\", \"VSphere\", \"oVirt\", \"EquinixMetal\", and \"None\". Individual components may not support all platforms, and must handle unrecognized platforms as None if they do not support that platform.\n\nThis value will be synced with to the `status.platform` and `status.platformStatus.type`. Currently this value cannot be changed once set.",
+	"type":         "type is the underlying infrastructure provider for the cluster. This value controls whether infrastructure automation such as service load balancers, dynamic volume provisioning, machine creation and deletion, and other integrations are enabled. If None, no infrastructure automation is enabled. Allowed values are \"AWS\", \"Azure\", \"BareMetal\", \"GCP\", \"Libvirt\", \"OpenStack\", \"VSphere\", \"oVirt\", \"EquinixMetal\", \"PowerVS\", and \"None\". Individual components may not support all platforms, and must handle unrecognized platforms as None if they do not support that platform.\n\nThis value will be synced with to the `status.platform` and `status.platformStatus.type`. Currently this value cannot be changed once set.",
 	"aws":          "AWS contains settings specific to the Amazon Web Services infrastructure provider.",
 	"azure":        "Azure contains settings specific to the Azure infrastructure provider.",
 	"gcp":          "GCP contains settings specific to the Google Cloud Platform infrastructure provider.",
 	"baremetal":    "BareMetal contains settings specific to the BareMetal platform.",
 	"openstack":    "OpenStack contains settings specific to the OpenStack infrastructure provider.",
 	"ovirt":        "Ovirt contains settings specific to the oVirt infrastructure provider.",
+	"powervs":      "PowerVS contains settings specific to the IBM Power Systems Virtual Server infrastructure.",
 	"vsphere":      "VSphere contains settings specific to the VSphere infrastructure provider.",
 	"ibmcloud":     "IBMCloud contains settings specific to the IBMCloud infrastructure provider.",
 	"kubevirt":     "Kubevirt contains settings specific to the kubevirt infrastructure provider.",
@@ -1073,6 +1075,35 @@ var map_PlatformStatus = map[string]string{
 
 func (PlatformStatus) SwaggerDoc() map[string]string {
 	return map_PlatformStatus
+}
+
+var map_PowerVSPlatformSpec = map[string]string{
+	"": "PowerVSPlatformSpec holds the desired state of the Power Systems Virtual Servers infrastructure provider. This only includes fields that can be modified in the cluster.",
+}
+
+func (PowerVSPlatformSpec) SwaggerDoc() map[string]string {
+	return map_PowerVSPlatformSpec
+}
+
+var map_PowerVSPlatformStatus = map[string]string{
+	"":                 "PowerVSPlatformStatus holds the current status of the Power VS infrastructure provider.",
+	"region":           "Region holds the default Power VS region for new Power VS resources created by the cluster.",
+	"zone":             "Zone holds the default colo zone for the new Power VS resources created by the cluster. Note: Currently only single-zone OCP clusters are supported",
+	"serviceEndpoints": "ServiceEndpoints list contains custom endpoints which will override default service endpoint of Power VS Services.",
+}
+
+func (PowerVSPlatformStatus) SwaggerDoc() map[string]string {
+	return map_PowerVSPlatformStatus
+}
+
+var map_PowerVSServiceEndpoint = map[string]string{
+	"":     "PowervsServiceEndpoint store the configuration of a custom url to override existing defaults of PowerVS Services.",
+	"name": "Name is the name of the Power VS services. Note that not all locations incude Power VS.",
+	"url":  "url is fully qualified URI with scheme https, that overrides the default generated endpoint for a client. This must be provided and cannot be empty.",
+}
+
+func (PowerVSServiceEndpoint) SwaggerDoc() map[string]string {
+	return map_PowerVSServiceEndpoint
 }
 
 var map_VSpherePlatformSpec = map[string]string{
