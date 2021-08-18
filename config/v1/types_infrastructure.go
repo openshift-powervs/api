@@ -164,7 +164,7 @@ const (
 	// EquinixMetalPlatformType represents Equinix Metal infrastructure.
 	EquinixMetalPlatformType PlatformType = "EquinixMetal"
 
-	// PowerVSPlatformType represents the IBM Power Virtual Systems offering (colo with IBM Cloud)
+	// PowerVSPlatformType represents IBM Power Systems Virtual Servers infrastructure.
 	PowerVSPlatformType PlatformType = "PowerVS"
 )
 
@@ -188,9 +188,9 @@ type PlatformSpec struct {
 	// balancers, dynamic volume provisioning, machine creation and deletion, and
 	// other integrations are enabled. If None, no infrastructure automation is
 	// enabled. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Libvirt",
-	// "OpenStack", "VSphere", "oVirt", "KubeVirt", "EquinixMetal", "PowerVS", and "None".
-	// Individual components may not support all platforms, and must handle unrecognized
-	// platforms as None if they do not support that platform.
+	// "OpenStack", "VSphere", "oVirt", "KubeVirt", "EquinixMetal", "PowerVS",
+	// and "None". Individual components may not support all platforms, and must
+	// handle unrecognized platforms as None if they do not support that platform.
 	//
 	// +unionDiscriminator
 	Type PlatformType `json:"type"`
@@ -235,7 +235,8 @@ type PlatformSpec struct {
 	// +optional
 	EquinixMetal *EquinixMetalPlatformSpec `json:"equinixMetal,omitempty"`
 
-	// PowerVS contains settings specific to the IBM Power Virtual Systems offering (colo with IBM Cloud)
+	// PowerVS contains settings specific to the IBM Power Systems Virtual Servers infrastructure provider.
+	// +optional
 	PowerVS *PowerVSPlatformSpec `json:"powervs,omitempty"`
 }
 
@@ -249,8 +250,8 @@ type PlatformStatus struct {
 	// other integrations are enabled. If None, no infrastructure automation is
 	// enabled. Allowed values are "AWS", "Azure", "BareMetal", "GCP", "Libvirt",
 	// "OpenStack", "VSphere", "oVirt", "EquinixMetal", "PowerVS", and "None".
-	// Individual components may not support all platforms, and must handle unrecognized
-	// platforms as None if they do not support that platform.
+	// Individual components may not support all platforms, and must handle
+	// unrecognized platforms as None if they do not support that platform.
 	//
 	// This value will be synced with to the `status.platform` and `status.platformStatus.type`.
 	// Currently this value cannot be changed once set.
@@ -280,10 +281,6 @@ type PlatformStatus struct {
 	// +optional
 	Ovirt *OvirtPlatformStatus `json:"ovirt,omitempty"`
 
-	// PowerVS contains settings specific to the IBM Power Systems Virtual Server infrastructure.
-	// +optional
-	PowerVS *PowerVSPlatformStatus `json:"powervs,omitempty"`
-
 	// VSphere contains settings specific to the VSphere infrastructure provider.
 	// +optional
 	VSphere *VSpherePlatformStatus `json:"vsphere,omitempty"`
@@ -299,6 +296,10 @@ type PlatformStatus struct {
 	// EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.
 	// +optional
 	EquinixMetal *EquinixMetalPlatformStatus `json:"equinixMetal,omitempty"`
+
+	// PowerVS contains settings specific to the Power Systems Virtual Servers infrastructure provider.
+	// +optional
+	PowerVS *PowerVSPlatformStatus `json:"powervs,omitempty"`
 }
 
 // AWSServiceEndpoint store the configuration of a custom url to
@@ -583,12 +584,12 @@ type EquinixMetalPlatformStatus struct {
 	IngressIP string `json:"ingressIP,omitempty"`
 }
 
-// PowervsServiceEndpoint store the configuration of a custom url to
+// PowervsServiceEndpoint stores the configuration of a custom url to
 // override existing defaults of PowerVS Services.
 type PowerVSServiceEndpoint struct {
-	// Name is the name of the Power VS services.
-	// Note that not all locations incude Power VS.
+	// name is the name of the Power VS service.
 	//
+	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:Pattern=`^[a-z0-9-]+$`
 	Name string `json:"name"`
 
@@ -596,27 +597,34 @@ type PowerVSServiceEndpoint struct {
 	// endpoint for a client.
 	// This must be provided and cannot be empty.
 	//
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Type=string
+	// +kubebuilder:validation:Format=uri
 	// +kubebuilder:validation:Pattern=`^https://`
 	URL string `json:"url"`
 }
 
-// PowerVSPlatformSpec holds the desired state of the Power Systems Virtual Servers infrastructure provider.
+// PowerVSPlatformSpec holds the desired state of the IBM Power Systems Virtual Servers infrastructure provider.
 // This only includes fields that can be modified in the cluster.
 type PowerVSPlatformSpec struct{}
 
-// PowerVSPlatformStatus holds the current status of the Power VS infrastructure provider.
+// PowerVSPlatformStatus holds the current status of the IBM Power Systems Virtual Servers infrastrucutre provider.
 type PowerVSPlatformStatus struct {
-	// Region holds the default Power VS region for new Power VS resources created by the cluster.
+	// region holds the default Power VS region for new Power VS resources created by the cluster.
 	Region string `json:"region"`
 
-	// Zone holds the default colo zone for the new Power VS resources created by the cluster.
+	// zone holds the default zone for the new Power VS resources created by the cluster.
 	// Note: Currently only single-zone OCP clusters are supported
 	Zone string `json:"zone"`
 
-	// ServiceEndpoints list contains custom endpoints which will override default
-	// service endpoint of Power VS Services.
+	// serviceEndpoints is a list of custom endpoints which will override the default
+	// service endpoints of a Power VS service.
 	// +optional
 	ServiceEndpoints []PowerVSServiceEndpoint `json:"serviceEndpoints,omitempty"`
+
+	// CISInstanceCRN is the CRN of the Cloud Internet Services instance managing
+	// the DNS zone for the cluster's base domain
+	CISInstanceCRN string `json:"cisInstanceCRN,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
