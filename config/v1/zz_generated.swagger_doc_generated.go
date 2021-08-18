@@ -1050,7 +1050,7 @@ var map_PlatformSpec = map[string]string{
 	"ibmcloud":     "IBMCloud contains settings specific to the IBMCloud infrastructure provider.",
 	"kubevirt":     "Kubevirt contains settings specific to the kubevirt infrastructure provider.",
 	"equinixMetal": "EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.",
-	"powervs":      "PowerVS contains settings specific to the IBM Power Virtual Systems offering (colo with IBM Cloud)",
+	"powervs":      "PowerVS contains settings specific to the IBM Power Systems Virtual Servers infrastructure provider.",
 }
 
 func (PlatformSpec) SwaggerDoc() map[string]string {
@@ -1066,11 +1066,11 @@ var map_PlatformStatus = map[string]string{
 	"baremetal":    "BareMetal contains settings specific to the BareMetal platform.",
 	"openstack":    "OpenStack contains settings specific to the OpenStack infrastructure provider.",
 	"ovirt":        "Ovirt contains settings specific to the oVirt infrastructure provider.",
-	"powervs":      "PowerVS contains settings specific to the IBM Power Systems Virtual Server infrastructure.",
 	"vsphere":      "VSphere contains settings specific to the VSphere infrastructure provider.",
 	"ibmcloud":     "IBMCloud contains settings specific to the IBMCloud infrastructure provider.",
 	"kubevirt":     "Kubevirt contains settings specific to the kubevirt infrastructure provider.",
 	"equinixMetal": "EquinixMetal contains settings specific to the Equinix Metal infrastructure provider.",
+	"powervs":      "PowerVS contains settings specific to the Power Systems Virtual Servers infrastructure provider.",
 }
 
 func (PlatformStatus) SwaggerDoc() map[string]string {
@@ -1078,7 +1078,7 @@ func (PlatformStatus) SwaggerDoc() map[string]string {
 }
 
 var map_PowerVSPlatformSpec = map[string]string{
-	"": "PowerVSPlatformSpec holds the desired state of the Power Systems Virtual Servers infrastructure provider. This only includes fields that can be modified in the cluster.",
+	"": "PowerVSPlatformSpec holds the desired state of the IBM Power Systems Virtual Servers infrastructure provider. This only includes fields that can be modified in the cluster.",
 }
 
 func (PowerVSPlatformSpec) SwaggerDoc() map[string]string {
@@ -1086,10 +1086,11 @@ func (PowerVSPlatformSpec) SwaggerDoc() map[string]string {
 }
 
 var map_PowerVSPlatformStatus = map[string]string{
-	"":                 "PowerVSPlatformStatus holds the current status of the Power VS infrastructure provider.",
-	"region":           "Region holds the default Power VS region for new Power VS resources created by the cluster.",
-	"zone":             "Zone holds the default colo zone for the new Power VS resources created by the cluster. Note: Currently only single-zone OCP clusters are supported",
-	"serviceEndpoints": "ServiceEndpoints list contains custom endpoints which will override default service endpoint of Power VS Services.",
+	"":                 "PowerVSPlatformStatus holds the current status of the IBM Power Systems Virtual Servers infrastrucutre provider.",
+	"region":           "region holds the default Power VS region for new Power VS resources created by the cluster.",
+	"zone":             "zone holds the default zone for the new Power VS resources created by the cluster. Note: Currently only single-zone OCP clusters are supported",
+	"serviceEndpoints": "serviceEndpoints is a list of custom endpoints which will override the default service endpoints of a Power VS service.",
+	"cisInstanceCRN":   "CISInstanceCRN is the CRN of the Cloud Internet Services instance managing the DNS zone for the cluster's base domain",
 }
 
 func (PowerVSPlatformStatus) SwaggerDoc() map[string]string {
@@ -1097,8 +1098,8 @@ func (PowerVSPlatformStatus) SwaggerDoc() map[string]string {
 }
 
 var map_PowerVSServiceEndpoint = map[string]string{
-	"":     "PowervsServiceEndpoint store the configuration of a custom url to override existing defaults of PowerVS Services.",
-	"name": "Name is the name of the Power VS services. Note that not all locations incude Power VS.",
+	"":     "PowervsServiceEndpoint stores the configuration of a custom url to override existing defaults of PowerVS Services.",
+	"name": "name is the name of the Power VS service.",
 	"url":  "url is fully qualified URI with scheme https, that overrides the default generated endpoint for a client. This must be provided and cannot be empty.",
 }
 
