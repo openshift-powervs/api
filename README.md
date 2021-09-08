@@ -1,6 +1,9 @@
 # api
 The canonical location of the OpenShift API definition.  This repo holds the API type definitions and serialization code used by [openshift/client-go](https://github.com/openshift/client-go)
 
+## RETIRED
+This fork is no longer used, as the API changes for Power VS have been merged upstream.
+
 ## pull request process
 
 Pull requests that change API types in this repo that have corresponding "internal" API objects in the 
